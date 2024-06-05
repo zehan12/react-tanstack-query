@@ -1,6 +1,10 @@
 import { FC } from "react";
 import { useTodos, useTodosIds } from "../services/todos.queries";
-import { useCreateTodo, useUpdateTodo } from "../services/todos.mutations";
+import {
+    useCreateTodo,
+    useDeleteTodo,
+    useUpdateTodo,
+} from "../services/todos.mutations";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { Todo } from "../types/todo";
 
@@ -14,6 +18,7 @@ const Todos: FC<TodosProps> = () => {
 
     const createTodoMutation = useCreateTodo();
     const updateTodoMutation = useUpdateTodo();
+    const deleteTodoMutation = useDeleteTodo();
 
     const handleCreateTodoSubmit: SubmitHandler<Todo> = (todo) => {
         createTodoMutation.mutate(todo);
@@ -23,6 +28,10 @@ const Todos: FC<TodosProps> = () => {
         if (todo) {
             updateTodoMutation.mutate({ ...todo, checked: true });
         }
+    };
+
+    const handleDeleteTodo = async(id: number) => {
+        if (id) deleteTodoMutation.mutateAsync(id);
     };
 
     return (
@@ -77,13 +86,20 @@ const Todos: FC<TodosProps> = () => {
                             <strong>Title: {data?.title}</strong>
                             <p>Description: {data?.description}</p>
                         </span>
-                        <div>
+                        <div className="flex gap-3">
                             <button
+                                className="bg-green-500 px-2 text-white font-semibold"
                                 onClick={() => handleMarkAsDoneSubmit(data)}
                                 disabled={data?.checked}
                             >
                                 {data?.checked ? "Done" : "Mark as done"}
                             </button>
+                            {data && data.id && (
+                                <button
+                                    className="bg-red-500 px-2 text-white font-semibold"
+                                    onClick={() => handleDeleteTodo(data.id!)}
+                                >Delete</button>
+                            )}
                         </div>
                     </li>
                 ))}

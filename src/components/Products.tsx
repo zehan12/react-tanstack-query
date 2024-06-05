@@ -1,11 +1,12 @@
 import { FC, Fragment, useState } from "react";
-import { useProducts } from "../services/products.queries";
+import { useProduct, useProducts } from "../services/products.queries";
 
 const Products: FC = () => {
     const [selectedProductId, setSelectedProductId] = useState<number | null>(
         null
     );
     const productsQuery = useProducts();
+    const productQuery = useProduct(selectedProductId);
 
     return (
         <>
@@ -42,6 +43,10 @@ const Products: FC = () => {
                             ? "Load more"
                             : "Nothing more to load"}
                     </button>
+                </div>
+                <div>
+                    Selected Product
+                    <div>{JSON.stringify(productQuery.data.data)}</div>
                 </div>
             </div>
         </>

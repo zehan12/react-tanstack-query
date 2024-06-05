@@ -8,3 +8,7 @@ export const getProducts = async ({ pageParam }: { pageParam: number }) => {
         )
     ).data;
 };
+
+export const getProduct = async (id: number) => {
+    return await axiosInstance.get<Product>(`products/${id}`);
+};

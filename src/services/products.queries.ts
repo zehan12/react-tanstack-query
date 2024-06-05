@@ -1,5 +1,11 @@
-import { useInfiniteQuery } from "@tanstack/react-query";
-import { getProducts } from "./products.api";
+import {
+    useInfiniteQuery,
+    useQuery,
+    useQueryClient,
+} from "@tanstack/react-query";
+import { getProduct, getProducts } from "./products.api";
+import { Product } from "../types/product";
+import { AxiosResponse } from "axios";
 
 export const useProducts = () => {
     return useInfiniteQuery({
@@ -17,6 +23,29 @@ export const useProducts = () => {
                 return undefined;
             }
             return firstPageParam - 1;
+        },
+    });
+};
+
+export const useProduct = (id: number | null) => {
+    const queryClient = useQueryClient();
+
+    return useQuery({
+        queryKey: ["product", { id }],
+        queryFn: () => getProduct(id!),
+        enabled: !!id,
+        placeholderData: () => {
+            const cachedProducts = (
+                queryClient.getQueryData(["products"]) as {
+                    pages: Product[] | undefined;
+                }
+            )?.pages?.flat(2);
+
+            if (cachedProducts) {
+                return cachedProducts.find(
+                    (item) => item.id === id
+                );
+            }
         },
     });
 };

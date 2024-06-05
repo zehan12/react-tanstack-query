@@ -80,6 +80,7 @@ const Todos: FC<TodosProps> = () => {
                         <div>
                             <button
                                 onClick={() => handleMarkAsDoneSubmit(data)}
+                                disabled={data?.checked}
                             >
                                 {data?.checked ? "Done" : "Mark as done"}
                             </button>
